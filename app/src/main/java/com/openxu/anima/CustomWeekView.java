@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +29,12 @@ public class CustomWeekView extends LinearLayout {
     private LinearLayout ll_1, ll_2, ll_3, ll_4, ll_5, ll_6, ll_7;
     private TextView tv_1, tv_2, tv_3, tv_4, tv_5, tv_6, tv_7;
     private LinearLayout ll_now, ll_down;   //当前可见的，下面不可见的（切换）
+
+    private int ITEM_WIDTH;   //每小项的宽高
+
     private int limit;          //可见条目数量
+    private float textSize;
+    private int textColor;
     private int durationTime;   //动画执行时间
     private int periodTime;     //间隔时间
     private int scrollHeight;   //滚动高度（控件高度）
@@ -67,55 +73,71 @@ public class CustomWeekView extends LinearLayout {
         tv_7 = (TextView) findViewById(R.id.tv_7);
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LimitScroller);
-            limit = ta.getInt(R.styleable.LimitScroller_limit, 1);
+            limit = 5;
+
+            textSize = ta.getDimension(R.styleable.LimitScroller_android_textSize, 15f);
+            final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+            textSize = textSize / fontScale + 0.5f;
+            textColor = ta.getColor(R.styleable.LimitScroller_android_textColor, Color.BLACK);
+
             durationTime = ta.getInt(R.styleable.LimitScroller_durationTime, 1000);
             periodTime = ta.getInt(R.styleable.LimitScroller_periodTime, 1000);
             ta.recycle();  //注意回收
-            Log.v(TAG, "limit=" + limit);
-            Log.v(TAG, "durationTime=" + durationTime);
-            Log.v(TAG, "periodTime=" + periodTime);
         }
+
+        tv_1.setTextSize(textSize);
+        tv_2.setTextSize(textSize);
+        tv_3.setTextSize(textSize);
+        tv_4.setTextSize(textSize);
+        tv_5.setTextSize(textSize);
+        tv_6.setTextSize(textSize);
+        tv_7.setTextSize(textSize);
+        tv_1.setTextColor(textColor);
+        tv_2.setTextColor(textColor);
+        tv_3.setTextColor(textColor);
+        tv_4.setTextColor(textColor);
+        tv_5.setTextColor(textColor);
+        tv_6.setTextColor(textColor);
+        tv_7.setTextColor(textColor);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        //EXACTLY=1073741824
-        //AT_MOST=-2147483648
-    /*        int specMode = MeasureSpec.getMode(heightMeasureSpec);
-            int specSize = MeasureSpec.getSize(heightMeasureSpec);
-            Log.w(TAG, "specMode="+specMode);
-            Log.w(TAG, "specSize="+specSize);
-            int newHeightSpec = MeasureSpec.makeMeasureSpec(specSize, MeasureSpec.EXACTLY);
-            int childCount = ll_content1.getChildCount();
-            if(childCount>0){
-                View item = ll_content1.getChildAt(0);
-                item.measure(widthMeasureSpec, newHeightSpec);
-                Log.w(TAG, "条目高度="+   item.getMeasuredHeight());
-                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-                setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight()/2);
-                scrollHeight = getMeasuredHeight();
-                return;
-            }
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);*/
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.v(TAG, "测量完成，宽度*高度="+getMeasuredWidth()+"*"+getMeasuredHeight());
-        Log.v(TAG, "ll_1测量完成，宽度*高度="+ll_1.getMeasuredWidth()+"*"+ll_1.getMeasuredHeight());
+        Log.w(TAG, "测量完成，宽度*高度="+getMeasuredWidth()+"*"+getMeasuredHeight());
+        ITEM_WIDTH = getMeasuredWidth()/limit;
+        Log.w(TAG, "每小项尺寸："+ITEM_WIDTH+"*"+getMeasuredHeight());
 
-
-
-
-
-
-
-        //设置高度为整体高度的一般，以达到遮盖预备容器的效果
-//        setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight() / 2);
-        //此处记下控件的高度，此高度就是动画执行时向上滚动的高度
-//        scrollHeight = getMeasuredHeight();
-        //        Log.w(TAG, "getMeasuredWidth="+getMeasuredWidth());
-        //        Log.w(TAG, "getMeasuredHeight="+getMeasuredHeight());
-        //        Log.w(TAG, "scrollHeight="+scrollHeight);
+        measureInit();
     }
+
+    private void measureInit(){
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)ll_1.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_1.setLayoutParams(lp);
+        lp = (LinearLayout.LayoutParams)ll_2.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_2.setLayoutParams(lp);
+        lp = (LinearLayout.LayoutParams)ll_3.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_3.setLayoutParams(lp);
+        lp = (LinearLayout.LayoutParams)ll_4.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_4.setLayoutParams(lp);
+        lp = (LinearLayout.LayoutParams)ll_5.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_5.setLayoutParams(lp);
+        lp = (LinearLayout.LayoutParams)ll_6.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_6.setLayoutParams(lp);
+        lp = (LinearLayout.LayoutParams)ll_7.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_7.setLayoutParams(lp);
+        //初始化时，让周日在左边隐藏备用
+        ll_7.setX(-ITEM_WIDTH);
+
+    }
+
 
     private void startAnimation() {
         Log.i(TAG, "滚动");
