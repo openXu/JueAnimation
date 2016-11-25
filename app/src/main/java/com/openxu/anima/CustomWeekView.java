@@ -9,8 +9,12 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * author : openXu
@@ -22,25 +26,30 @@ import android.widget.TextView;
  * version : 1.0
  * class describe：自定义日期控件
  */
-public class CustomWeekView extends LinearLayout {
+public class CustomWeekView extends LinearLayout implements View.OnClickListener {
 
     private String TAG = "CustomWeekViewextends";
 
-    private LinearLayout ll_1, ll_2, ll_3, ll_4, ll_5, ll_6, ll_7;
-    private TextView tv_1, tv_2, tv_3, tv_4, tv_5, tv_6, tv_7;
-    private LinearLayout ll_now, ll_down;   //当前可见的，下面不可见的（切换）
+    private enum WEEKDAY{
+        wk1,wk2,wk3,wk4,wk5,wk6,wk7
+    }
 
-    private int ITEM_WIDTH;   //每小项的宽高
 
+    private LinearLayout ll_1, ll_2, ll_3, ll_4, ll_5, ll_6, ll_7, ll_8, ll_9;
+    private TextView tv_1, tv_2, tv_3, tv_4, tv_5, tv_6, tv_7, tv_8, tv_9;
+    private List<LinearLayout> llList;
+
+    private String[] WEEK_STR = new String[]{"0","一","二","三","四","五","六","日"};
+    private WEEKDAY centerNow;      //当前显示在中间的
+
+    private int ITEM_WIDTH;     //每小项的宽高
     private int limit;          //可见条目数量
+    /*自定义属性*/
     private float textSize;
     private int textColor;
     private int durationTime;   //动画执行时间
-    private int periodTime;     //间隔时间
-    private int scrollHeight;   //滚动高度（控件高度）
 
-    private final int MSG_SETDATA = 1;
-    private final int MSG_SCROL = 2;
+    private boolean animalFinish = false;   //动画期间不嫩点击
 
     public CustomWeekView(Context context) {
         this(context, null);
@@ -64,6 +73,8 @@ public class CustomWeekView extends LinearLayout {
         ll_5 = (LinearLayout) findViewById(R.id.ll_5);
         ll_6 = (LinearLayout) findViewById(R.id.ll_6);
         ll_7 = (LinearLayout) findViewById(R.id.ll_7);
+        ll_8 = (LinearLayout) findViewById(R.id.ll_8);
+        ll_9 = (LinearLayout) findViewById(R.id.ll_9);
         tv_1 = (TextView) findViewById(R.id.tv_1);
         tv_2 = (TextView) findViewById(R.id.tv_2);
         tv_3 = (TextView) findViewById(R.id.tv_3);
@@ -71,6 +82,8 @@ public class CustomWeekView extends LinearLayout {
         tv_5 = (TextView) findViewById(R.id.tv_5);
         tv_6 = (TextView) findViewById(R.id.tv_6);
         tv_7 = (TextView) findViewById(R.id.tv_7);
+        tv_8 = (TextView) findViewById(R.id.tv_8);
+        tv_9 = (TextView) findViewById(R.id.tv_9);
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LimitScroller);
             limit = 5;
@@ -81,7 +94,6 @@ public class CustomWeekView extends LinearLayout {
             textColor = ta.getColor(R.styleable.LimitScroller_android_textColor, Color.BLACK);
 
             durationTime = ta.getInt(R.styleable.LimitScroller_durationTime, 1000);
-            periodTime = ta.getInt(R.styleable.LimitScroller_periodTime, 1000);
             ta.recycle();  //注意回收
         }
 
@@ -92,6 +104,8 @@ public class CustomWeekView extends LinearLayout {
         tv_5.setTextSize(textSize);
         tv_6.setTextSize(textSize);
         tv_7.setTextSize(textSize);
+        tv_8.setTextSize(textSize);
+        tv_9.setTextSize(textSize);
         tv_1.setTextColor(textColor);
         tv_2.setTextColor(textColor);
         tv_3.setTextColor(textColor);
@@ -99,6 +113,30 @@ public class CustomWeekView extends LinearLayout {
         tv_5.setTextColor(textColor);
         tv_6.setTextColor(textColor);
         tv_7.setTextColor(textColor);
+        tv_8.setTextColor(textColor);
+        tv_9.setTextColor(textColor);
+
+        llList = new ArrayList<>();
+        llList.add(ll_1);
+        llList.add(ll_2);
+        llList.add(ll_3);
+        llList.add(ll_4);
+        llList.add(ll_5);
+        llList.add(ll_6);
+        llList.add(ll_7);
+        llList.add(ll_8);
+        llList.add(ll_9);
+
+        ll_1.setOnClickListener(this);
+        ll_2.setOnClickListener(this);
+        ll_3.setOnClickListener(this);
+        ll_4.setOnClickListener(this);
+        ll_5.setOnClickListener(this);
+        ll_6.setOnClickListener(this);
+        ll_7.setOnClickListener(this);
+        ll_8.setOnClickListener(this);
+        ll_9.setOnClickListener(this);
+
     }
 
     @Override
@@ -133,54 +171,369 @@ public class CustomWeekView extends LinearLayout {
         lp = (LinearLayout.LayoutParams)ll_7.getLayoutParams();
         lp.width = ITEM_WIDTH;
         ll_7.setLayoutParams(lp);
-        //初始化时，让周日在左边隐藏备用
-        ll_7.setX(-ITEM_WIDTH);
+        lp = (LinearLayout.LayoutParams)ll_8.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_8.setLayoutParams(lp);
+        lp = (LinearLayout.LayoutParams)ll_9.getLayoutParams();
+        lp.width = ITEM_WIDTH;
+        ll_9.setLayoutParams(lp);
+
+        Log.v(TAG, "位置："+ll_1.getX()+" "+ll_2.getX()+" "+ll_3.getX()+" "
+                +ll_4.getX()+" "+ll_5.getX()+" "+ll_6.getX()
+                +" "+ll_7.getX()+" "+ll_8.getX()+" "+ll_9.getX());
+
+        if(ll_2.getX()>0) {
+            //默认周3在中间
+            setCenter(WEEKDAY.wk3);
+        }
 
     }
 
 
-    private void startAnimation() {
-        Log.i(TAG, "滚动");
-        //当前展示的容器，从当前位置（0）,向上滚动scrollHeight
-        ObjectAnimator anim1 = ObjectAnimator.ofFloat(ll_now, "Y", ll_now.getY(), ll_now.getY() - scrollHeight);
-        //预备容器，从当前位置，向上滚动scrollHeight
-        ObjectAnimator anim2 = ObjectAnimator.ofFloat(ll_down, "Y", ll_down.getY(), ll_down.getY() - scrollHeight);
+    private LinearLayout ll1, ll2, ll3, ll4, ll5, ll6, ll7, ll8, ll9;
+    /**1、找到正在展示的五个item，并将预备item复位*/
+    private void setCenter(WEEKDAY weekDay){
+        centerNow = weekDay;
+        //1、找到当前显示的5个条目的位置
+        List<LinearLayout> list = new ArrayList<>(llList);
+        for(int i = 0; i<5; i++){
+            for(int j = 0; j<list.size(); j++){
+                LinearLayout ll = list.get(j);
+                if(ll.getX()==ITEM_WIDTH*i){
+                    list.remove(ll);      //找到之后就remove可以减少后面遍历的次数
+                    Log.d(TAG, "找到"+i+"了"+ll);
+                    switch (i) {
+                        case 0:
+                            ll1 = ll;
+                            break;
+                        case 1:
+                            ll2 = ll;
+                            break;
+                        case 2:
+                            ll3 = ll;
+                            break;
+                        case 3:
+                            ll4 = ll;
+                            break;
+                        case 4:
+                            ll5 = ll;
+                            break;
+                    }
+                }
+            }
+        }
+        Log.i(TAG, "找完后还剩"+list.size()+"  总："+llList.size());
+        //2、剩余的四个作为预备，归位，左边隐藏两个，右边隐藏两个
+        for(int i = 0; i<list.size(); i++){
+            LinearLayout ll = list.get(i);
+            switch (i){
+                case 0:   //左1
+                    ll.setX(-ITEM_WIDTH*2);
+                    ll8=ll;
+                    break;
+                case 1:   //左2
+                    ll.setX(-ITEM_WIDTH*1);
+                    ll9=ll;
+                    break;
+                case 2:   //右1
+                    ll.setX(ITEM_WIDTH*5);
+                    ll6=ll;
+                    break;
+                case 3:   //右2
+                    ll.setX(-ITEM_WIDTH*6);
+                    ll7=ll;
+                    break;
+            }
+        }
+
+        reBoundDataByCenter(weekDay);
+
+    }
+
+    /**2、重新绑定数据*/
+    private void reBoundDataByCenter(WEEKDAY weekDay){
+        if(weekDay == WEEKDAY.wk1){
+            /*星期1在中间，依次为4、5、6、7、1、2、3、4、5*/
+            setLLText(ll8, 4);
+            setLLText(ll9, 5);
+            setLLText(ll1, 6);
+            setLLText(ll2, 7);
+            setLLText(ll3, 1);
+            setLLText(ll4, 2);
+            setLLText(ll5, 3);
+            setLLText(ll6, 4);
+            setLLText(ll7, 5);
+        }else if(weekDay == WEEKDAY.wk2){
+            /*星期2在中间，依次为5、6、7、1、2、3、4、5、6*/
+            setLLText(ll8, 5);
+            setLLText(ll9, 6);
+            setLLText(ll1, 7);
+            setLLText(ll2, 1);
+            setLLText(ll3, 2);
+            setLLText(ll4, 3);
+            setLLText(ll5, 4);
+            setLLText(ll6, 5);
+            setLLText(ll7, 6);
+        }else if(weekDay == WEEKDAY.wk3){
+            /*星期3在中间，依次为6、7、1、2、3、4、5、6、7*/
+            setLLText(ll8, 6);
+            setLLText(ll9, 7);
+            setLLText(ll1, 1);
+            setLLText(ll2, 2);
+            setLLText(ll3, 3);
+            setLLText(ll4, 4);
+            setLLText(ll5, 5);
+            setLLText(ll6, 6);
+            setLLText(ll7, 7);
+        }else if(weekDay == WEEKDAY.wk4){
+            /*星期4在中间，依次为7、1、2、3、4、5、6、7、1*/
+            setLLText(ll8, 7);
+            setLLText(ll9, 1);
+            setLLText(ll1, 2);
+            setLLText(ll2, 3);
+            setLLText(ll3, 4);
+            setLLText(ll4, 5);
+            setLLText(ll5, 6);
+            setLLText(ll6, 7);
+            setLLText(ll7, 1);
+        }else if(weekDay == WEEKDAY.wk5){
+            /*星期5在中间，依次为1、2、3、4、5、6、7、1、2*/
+            setLLText(ll8, 1);
+            setLLText(ll9, 2);
+            setLLText(ll1, 3);
+            setLLText(ll2, 4);
+            setLLText(ll3, 5);
+            setLLText(ll4, 6);
+            setLLText(ll5, 7);
+            setLLText(ll6, 1);
+            setLLText(ll7, 2);
+        }else if(weekDay == WEEKDAY.wk6){
+            /*星期6在中间，依次为2、3、4、5、6、7、1、2、3*/
+            setLLText(ll8, 2);
+            setLLText(ll9, 3);
+            setLLText(ll1, 4);
+            setLLText(ll2, 5);
+            setLLText(ll3, 6);
+            setLLText(ll4, 7);
+            setLLText(ll5, 1);
+            setLLText(ll6, 2);
+            setLLText(ll7, 3);
+        }else if(weekDay == WEEKDAY.wk7){
+            /*星期7在中间，依次为3、4、5、6、7、1、2、3、4*/
+            setLLText(ll8, 3);
+            setLLText(ll9, 4);
+            setLLText(ll1, 5);
+            setLLText(ll2, 6);
+            setLLText(ll3, 7);
+            setLLText(ll4, 1);
+            setLLText(ll5, 2);
+            setLLText(ll6, 3);
+            setLLText(ll7, 4);
+        }
+        animalFinish = true;
+    }
+
+    private String setLLText(LinearLayout ll, int witchDay){
+        ll.setTag(witchDay);   //便于区分点击事件
+        TextView tv = (TextView)ll.getChildAt(0);
+        String text = "星期" + WEEK_STR[witchDay];
+        tv.setText(text);
+        return text;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(!animalFinish){
+            Log.e(TAG, "动画还没执行完毕，不能点击");
+            return;
+        }
+        switch (v.getId()){
+            case R.id.ll_1:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_1.getTag()]);
+                startAnimation(getEnumByNum((int)ll_1.getTag()));
+                break;
+            case R.id.ll_2:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_2.getTag()]);
+                startAnimation(getEnumByNum((int)ll_2.getTag()));
+                break;
+            case R.id.ll_3:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_3.getTag()]);
+                startAnimation(getEnumByNum((int)ll_3.getTag()));
+                break;
+            case R.id.ll_4:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_4.getTag()]);
+                startAnimation(getEnumByNum((int)ll_4.getTag()));
+                break;
+            case R.id.ll_5:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_5.getTag()]);
+                startAnimation(getEnumByNum((int)ll_5.getTag()));
+                break;
+            case R.id.ll_6:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_6.getTag()]);
+                startAnimation(getEnumByNum((int)ll_6.getTag()));
+                break;
+            case R.id.ll_7:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_7.getTag()]);
+                startAnimation(getEnumByNum((int)ll_6.getTag()));
+                break;
+            case R.id.ll_8:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_8.getTag()]);
+                startAnimation(getEnumByNum((int)ll_8.getTag()));
+                break;
+            case R.id.ll_9:
+                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_9.getTag()]);
+                startAnimation(getEnumByNum((int)ll_9.getTag()));
+                break;
+        }
+    }
+
+    private WEEKDAY getEnumByNum(int num){
+        switch (num){
+            case 1:
+                return WEEKDAY.wk1;
+            case 2:
+                return WEEKDAY.wk2;
+            case 3:
+                return WEEKDAY.wk3;
+            case 4:
+                return WEEKDAY.wk4;
+            case 5:
+                return WEEKDAY.wk5;
+            case 6:
+                return WEEKDAY.wk6;
+            case 7:
+                return WEEKDAY.wk7;
+        }
+        return WEEKDAY.wk1;
+
+    }
+
+
+    private void startAnimation(final WEEKDAY centerWitch) {
+
+        if(centerWitch==centerNow)
+            return;
+        animalFinish = false;
+        //根据当前中间位置显示的 和 被点击的日期，获取需要偏移的增量
+        int offset = getXOffset(centerWitch);
+        Log.d(TAG, "当前中间为"+centerNow+"，点击的是"+centerWitch+ "  偏移量："+offset);
+
+        ObjectAnimator anim1 = ObjectAnimator.ofFloat(ll_1, "X", ll_1.getX(), ll_1.getX() + offset);
+        ObjectAnimator anim2 = ObjectAnimator.ofFloat(ll_2, "X", ll_2.getX(), ll_2.getX() + offset);
+        ObjectAnimator anim3 = ObjectAnimator.ofFloat(ll_3, "X", ll_3.getX(), ll_3.getX() + offset);
+        ObjectAnimator anim4 = ObjectAnimator.ofFloat(ll_4, "X", ll_4.getX(), ll_4.getX() + offset);
+        ObjectAnimator anim5 = ObjectAnimator.ofFloat(ll_5, "X", ll_5.getX(), ll_5.getX() + offset);
+        ObjectAnimator anim6 = ObjectAnimator.ofFloat(ll_6, "X", ll_6.getX(), ll_6.getX() + offset);
+        ObjectAnimator anim7 = ObjectAnimator.ofFloat(ll_7, "X", ll_7.getX(), ll_7.getX() + offset);
+        ObjectAnimator anim8 = ObjectAnimator.ofFloat(ll_8, "X", ll_8.getX(), ll_8.getX() + offset);
+        ObjectAnimator anim9 = ObjectAnimator.ofFloat(ll_9, "X", ll_9.getX(), ll_9.getX() + offset);
         AnimatorSet animSet = new AnimatorSet();
         animSet.setDuration(durationTime);
-        animSet.playTogether(anim1, anim2);
+        animSet.playTogether(anim1, anim2, anim3, anim4, anim5, anim6, anim7, anim8, anim9);
         animSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                //                Log.v(TAG, "ll_now动画开始前位置："+ll_now.getX()+"*"+ll_now.getY());
-                //                Log.v(TAG, "ll_down动画开始前位置："+ll_down.getX()+"*"+ll_down.getY());
             }
-
             @Override
             public void onAnimationEnd(Animator animation) {
-                //滚动结束后，now的位置变成了-scrollHeight，这时将他移动到最底下
-                ll_now.setY(scrollHeight);
-                //down的位置变为0，也就是当前看见的
-                ll_down.setY(0);
-                //                Log.v(TAG, "1调整之后ll_now位置："+ll_now.getX()+"*"+ll_now.getY());
-                //                Log.v(TAG, "1调整之后ll_down位置："+ll_down.getX()+"*"+ll_down.getY());
-                LinearLayout temp = ll_now;
-                ll_now = ll_down;
-                ll_down = temp;
-                //                Log.v(TAG, "2调整之后ll_now位置："+ll_now.getX()+"*"+ll_now.getY());
-                //                Log.v(TAG, "2调整之后ll_down位置："+ll_down.getX()+"*"+ll_down.getY());
-                //给不可见的控件绑定新数据
-
+                Log.v(TAG, "动画结束了，重新绑定数据");
+                setCenter(centerWitch);
             }
-
             @Override
             public void onAnimationCancel(Animator animation) {
             }
-
             @Override
             public void onAnimationRepeat(Animator animation) {
             }
         });
         animSet.start();
     }
+
+    /**获取偏移量*/
+    private int getXOffset(WEEKDAY centerWitch) {
+        int offset = 0;
+        if(centerNow==WEEKDAY.wk1){
+            /*星期1在中间，依次为6、7、1、2、3*/
+            if(centerWitch==WEEKDAY.wk6){
+                offset = ITEM_WIDTH * 2;
+            }else if(centerWitch==WEEKDAY.wk7){
+                offset = ITEM_WIDTH * 1;
+            }else if(centerWitch==WEEKDAY.wk2){
+                offset = ITEM_WIDTH * -1;
+            }else if(centerWitch==WEEKDAY.wk3){
+                offset = ITEM_WIDTH * -2;
+            }
+        }if(centerNow==WEEKDAY.wk2){
+            /*星期1在中间，依次为7、1、2、3、4*/
+            if(centerWitch==WEEKDAY.wk7){
+                offset = ITEM_WIDTH * 2;
+            }else if(centerWitch==WEEKDAY.wk1){
+                offset = ITEM_WIDTH * 1;
+            }else if(centerWitch==WEEKDAY.wk3){
+                offset = ITEM_WIDTH * -1;
+            }else if(centerWitch==WEEKDAY.wk4){
+                offset = ITEM_WIDTH * -2;
+            }
+        }if(centerNow==WEEKDAY.wk3){
+            /*星期1在中间，依次为1、2、3、4、5*/
+            if(centerWitch==WEEKDAY.wk1){
+                offset = ITEM_WIDTH * 2;
+            }else if(centerWitch==WEEKDAY.wk2){
+                offset = ITEM_WIDTH * 1;
+            }else if(centerWitch==WEEKDAY.wk4){
+                offset = ITEM_WIDTH * -1;
+            }else if(centerWitch==WEEKDAY.wk5){
+                offset = ITEM_WIDTH * -2;
+            }
+        }if(centerNow==WEEKDAY.wk4){
+            /*星期1在中间，依次为2、3、4、5、6*/
+            if(centerWitch==WEEKDAY.wk2){
+                offset = ITEM_WIDTH * 2;
+            }else if(centerWitch==WEEKDAY.wk3){
+                offset = ITEM_WIDTH * 1;
+            }else if(centerWitch==WEEKDAY.wk5){
+                offset = ITEM_WIDTH * -1;
+            }else if(centerWitch==WEEKDAY.wk6){
+                offset = ITEM_WIDTH * -2;
+            }
+        }if(centerNow==WEEKDAY.wk5){
+            /*星期1在中间，依次为3、4、5、6、7*/
+            if(centerWitch==WEEKDAY.wk3){
+                offset = ITEM_WIDTH * 2;
+            }else if(centerWitch==WEEKDAY.wk4){
+                offset = ITEM_WIDTH * 1;
+            }else if(centerWitch==WEEKDAY.wk6){
+                offset = ITEM_WIDTH * -1;
+            }else if(centerWitch==WEEKDAY.wk7){
+                offset = ITEM_WIDTH * -2;
+            }
+        }if(centerNow==WEEKDAY.wk6){
+            /*星期1在中间，依次为4、5、6、7、1*/
+            if(centerWitch==WEEKDAY.wk4){
+                offset = ITEM_WIDTH * 2;
+            }else if(centerWitch==WEEKDAY.wk5){
+                offset = ITEM_WIDTH * 1;
+            }else if(centerWitch==WEEKDAY.wk7){
+                offset = ITEM_WIDTH * -1;
+            }else if(centerWitch==WEEKDAY.wk1){
+                offset = ITEM_WIDTH * -2;
+            }
+        }if(centerNow==WEEKDAY.wk7){
+            /*星期1在中间，依次为5、6、7、1、2*/
+            if(centerWitch==WEEKDAY.wk5){
+                offset = ITEM_WIDTH * 2;
+            }else if(centerWitch==WEEKDAY.wk6){
+                offset = ITEM_WIDTH * 1;
+            }else if(centerWitch==WEEKDAY.wk1){
+                offset = ITEM_WIDTH * -1;
+            }else if(centerWitch==WEEKDAY.wk2){
+                offset = ITEM_WIDTH * -2;
+            }
+        }
+
+        return offset;
+
+    }
+
 
 }
