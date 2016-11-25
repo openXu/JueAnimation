@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9a9a9a"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#ff0000"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tv_1"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:gravity="center"
+            android:background="@drawable/week_one_bg"
+            android:text="周一" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tv_2"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:gravity="center"
+            android:background="@drawable/week_one_bg"
+            android:text="周二" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_3"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tv_3"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:gravity="center"
+            android:background="@drawable/week_one_bg"
+            android:text="周三" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_4"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tv_4"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:gravity="center"
+            android:background="@drawable/week_one_bg"
+            android:text="周四" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_5"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tv_5"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:gravity="center"
+            android:background="@drawable/week_one_bg"
+            android:text="周五" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_6"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tv_6"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:gravity="center"
+            android:background="@drawable/week_one_bg"
+            android:text="周六" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_7"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tv_7"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:gravity="center"
+            android:background="@drawable/week_one_bg"
+            android:text="周日" />
+    </LinearLayout>
+
+
+</LinearLayout>
