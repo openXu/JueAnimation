@@ -8,6 +8,5 @@
         <attr name="dateTextSize" format="integer" />
         <attr name="dateTextColor" format="color" />
         <attr name="scaleSize" format="float" />  <!--缩放动画增量1：不放大  2:放大两倍-->
-        <attr name="scalSize" format="float" />  <!--缩放动画增量1：不放大  2:放大两倍-->
     </declare-styleable>
 </resources>
