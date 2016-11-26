@@ -11,61 +11,103 @@
         android:id="@+id/ll_1"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_1"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_2"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_2"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
-
     <LinearLayout
         android:id="@+id/ll_3"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_3"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/ll_4"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_4"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -73,15 +115,26 @@
         android:id="@+id/ll_5"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_5"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -89,15 +142,26 @@
         android:id="@+id/ll_6"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_6"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -105,30 +169,53 @@
         android:id="@+id/ll_7"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_7"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/ll_8"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_8"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -136,15 +223,26 @@
         android:id="@+id/ll_9"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_9"
+        <LinearLayout
             android:layout_width="@dimen/week_item_sise"
             android:layout_height="@dimen/week_item_sise"
-            android:gravity="center"
             android:background="@drawable/week_one_bg"
-            android:text="周" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+            <TextView
+                android:id="@+id/tv_date9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="周" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

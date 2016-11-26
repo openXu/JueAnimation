@@ -3,7 +3,6 @@ package com.openxu.anima;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -42,6 +41,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     private LinearLayout ll_1, ll_2, ll_3, ll_4, ll_5, ll_6, ll_7, ll_8, ll_9;
     //字条目中显示字体的TextView
     private TextView tv_1, tv_2, tv_3, tv_4, tv_5, tv_6, tv_7, tv_8, tv_9;
+    private TextView tv_date1, tv_date2, tv_date3, tv_date4, tv_date5, tv_date6, tv_date7, tv_date8, tv_date9;
     //用于存放所有字条目的引用
     private List<LinearLayout> llList;
     //根据索引获取 大小 展示星期几
@@ -96,6 +96,15 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         tv_7 = (TextView) findViewById(R.id.tv_7);
         tv_8 = (TextView) findViewById(R.id.tv_8);
         tv_9 = (TextView) findViewById(R.id.tv_9);
+        tv_date1 = (TextView) findViewById(R.id.tv_date1);
+        tv_date2 = (TextView) findViewById(R.id.tv_date2);
+        tv_date3 = (TextView) findViewById(R.id.tv_date3);
+        tv_date4 = (TextView) findViewById(R.id.tv_date4);
+        tv_date5 = (TextView) findViewById(R.id.tv_date5);
+        tv_date6 = (TextView) findViewById(R.id.tv_date6);
+        tv_date7 = (TextView) findViewById(R.id.tv_date7);
+        tv_date8 = (TextView) findViewById(R.id.tv_date8);
+        tv_date9 = (TextView) findViewById(R.id.tv_date9);
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LimitScroller);
             limit = 5;
@@ -112,7 +121,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
             ta.recycle();  //注意回收
         }
 
-        tv_1.setTextSize(textSize);
+        tv_date1.setTextSize(textSize);
         tv_2.setTextSize(textSize);
         tv_3.setTextSize(textSize);
         tv_4.setTextSize(textSize);
@@ -130,6 +139,24 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         tv_7.setTextColor(textColor);
         tv_8.setTextColor(textColor);
         tv_9.setTextColor(textColor);
+        tv_date1.setTextSize(dateTextSize);
+        tv_date2.setTextSize(dateTextSize);
+        tv_date3.setTextSize(dateTextSize);
+        tv_date4.setTextSize(dateTextSize);
+        tv_date5.setTextSize(dateTextSize);
+        tv_date6.setTextSize(dateTextSize);
+        tv_date7.setTextSize(dateTextSize);
+        tv_date8.setTextSize(dateTextSize);
+        tv_date9.setTextSize(dateTextSize);
+        tv_date1.setTextColor(dateTextColor);
+        tv_date2.setTextColor(dateTextColor);
+        tv_date3.setTextColor(dateTextColor);
+        tv_date4.setTextColor(dateTextColor);
+        tv_date5.setTextColor(dateTextColor);
+        tv_date6.setTextColor(dateTextColor);
+        tv_date7.setTextColor(dateTextColor);
+        tv_date8.setTextColor(dateTextColor);
+        tv_date9.setTextColor(dateTextColor);
 
         llList = new ArrayList<>();
         llList.add(ll_1);
@@ -214,11 +241,11 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
 
         if(ll_2.getX()>0) {
             //默认周3在中间
+            animalFinish = false;
             setCenter(WEEKDAY.wk3);
+            animalFinish = true;
         }
-
     }
-
 
     /*这些引用代表当前正在显示的5个条目 和 四个预备条目，
      *由于ll_x系列条目是不断移动的，所以此处需要根据ll_x的位置重新为llx赋值
@@ -292,91 +319,99 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     private void reBoundDataByCenter(WEEKDAY weekDay){
         if(weekDay == WEEKDAY.wk1){
             /*星期1在中间，依次为4、5、6、7、1、2、3、4、5*/
-            setLLText(ll8, 4);
-            setLLText(ll9, 5);
-            setLLText(ll1, 6);
-            setLLText(ll2, 7);
-            setLLText(ll3, 1);
-            setLLText(ll4, 2);
-            setLLText(ll5, 3);
-            setLLText(ll6, 4);
-            setLLText(ll7, 5);
+            setLLText(ll8, 4, false);
+            setLLText(ll9, 5, false);
+            setLLText(ll1, 6, false);
+            setLLText(ll2, 7, false);
+            setLLText(ll3, 1, true);
+            setLLText(ll4, 2, false);
+            setLLText(ll5, 3, false);
+            setLLText(ll6, 4, false);
+            setLLText(ll7, 5, false);
         }else if(weekDay == WEEKDAY.wk2){
             /*星期2在中间，依次为5、6、7、1、2、3、4、5、6*/
-            setLLText(ll8, 5);
-            setLLText(ll9, 6);
-            setLLText(ll1, 7);
-            setLLText(ll2, 1);
-            setLLText(ll3, 2);
-            setLLText(ll4, 3);
-            setLLText(ll5, 4);
-            setLLText(ll6, 5);
-            setLLText(ll7, 6);
+            setLLText(ll8, 5, false);
+            setLLText(ll9, 6, false);
+            setLLText(ll1, 7, false);
+            setLLText(ll2, 1, false);
+            setLLText(ll3, 2, true);
+            setLLText(ll4, 3, false);
+            setLLText(ll5, 4, false);
+            setLLText(ll6, 5, false);
+            setLLText(ll7, 6, false);
         }else if(weekDay == WEEKDAY.wk3){
             /*星期3在中间，依次为6、7、1、2、3、4、5、6、7*/
-            setLLText(ll8, 6);
-            setLLText(ll9, 7);
-            setLLText(ll1, 1);
-            setLLText(ll2, 2);
-            setLLText(ll3, 3);
-            setLLText(ll4, 4);
-            setLLText(ll5, 5);
-            setLLText(ll6, 6);
-            setLLText(ll7, 7);
+            setLLText(ll8, 6, false);
+            setLLText(ll9, 7, false);
+            setLLText(ll1, 1, false);
+            setLLText(ll2, 2, false);
+            setLLText(ll3, 3, true);
+            setLLText(ll4, 4, false);
+            setLLText(ll5, 5, false);
+            setLLText(ll6, 6, false);
+            setLLText(ll7, 7, false);
         }else if(weekDay == WEEKDAY.wk4){
             /*星期4在中间，依次为7、1、2、3、4、5、6、7、1*/
-            setLLText(ll8, 7);
-            setLLText(ll9, 1);
-            setLLText(ll1, 2);
-            setLLText(ll2, 3);
-            setLLText(ll3, 4);
-            setLLText(ll4, 5);
-            setLLText(ll5, 6);
-            setLLText(ll6, 7);
-            setLLText(ll7, 1);
+            setLLText(ll8, 7, false);
+            setLLText(ll9, 1, false);
+            setLLText(ll1, 2, false);
+            setLLText(ll2, 3, false);
+            setLLText(ll3, 4, true);
+            setLLText(ll4, 5, false);
+            setLLText(ll5, 6, false);
+            setLLText(ll6, 7, false);
+            setLLText(ll7, 1, false);
         }else if(weekDay == WEEKDAY.wk5){
             /*星期5在中间，依次为1、2、3、4、5、6、7、1、2*/
-            setLLText(ll8, 1);
-            setLLText(ll9, 2);
-            setLLText(ll1, 3);
-            setLLText(ll2, 4);
-            setLLText(ll3, 5);
-            setLLText(ll4, 6);
-            setLLText(ll5, 7);
-            setLLText(ll6, 1);
-            setLLText(ll7, 2);
+            setLLText(ll8, 1, false);
+            setLLText(ll9, 2, false);
+            setLLText(ll1, 3, false);
+            setLLText(ll2, 4, false);
+            setLLText(ll3, 5, true);
+            setLLText(ll4, 6, false);
+            setLLText(ll5, 7, false);
+            setLLText(ll6, 1, false);
+            setLLText(ll7, 2, false);
         }else if(weekDay == WEEKDAY.wk6){
             /*星期6在中间，依次为2、3、4、5、6、7、1、2、3*/
-            setLLText(ll8, 2);
-            setLLText(ll9, 3);
-            setLLText(ll1, 4);
-            setLLText(ll2, 5);
-            setLLText(ll3, 6);
-            setLLText(ll4, 7);
-            setLLText(ll5, 1);
-            setLLText(ll6, 2);
-            setLLText(ll7, 3);
+            setLLText(ll8, 2, false);
+            setLLText(ll9, 3, false);
+            setLLText(ll1, 4, false);
+            setLLText(ll2, 5, false);
+            setLLText(ll3, 6, true);
+            setLLText(ll4, 7, false);
+            setLLText(ll5, 1, false);
+            setLLText(ll6, 2, false);
+            setLLText(ll7, 3, false);
         }else if(weekDay == WEEKDAY.wk7){
             /*星期7在中间，依次为3、4、5、6、7、1、2、3、4*/
-            setLLText(ll8, 3);
-            setLLText(ll9, 4);
-            setLLText(ll1, 5);
-            setLLText(ll2, 6);
-            setLLText(ll3, 7);
-            setLLText(ll4, 1);
-            setLLText(ll5, 2);
-            setLLText(ll6, 3);
-            setLLText(ll7, 4);
+            setLLText(ll8, 3, false);
+            setLLText(ll9, 4, false);
+            setLLText(ll1, 5, false);
+            setLLText(ll2, 6, false);
+            setLLText(ll3, 7, true);
+            setLLText(ll4, 1, false);
+            setLLText(ll5, 2, false);
+            setLLText(ll6, 3, false);
+            setLLText(ll7, 4, false);
         }
-        animalFinish = true;
     }
 
-    private String setLLText(LinearLayout ll, int witchDay){
+    private void setLLText(LinearLayout ll, int witchDay, boolean showDate){
         ll.setTag(witchDay);   //便于区分点击事件
-        TextView tv = (TextView)ll.getChildAt(0);
+        LinearLayout innerLL = (LinearLayout)ll.getChildAt(0);
+        TextView tv = (TextView)innerLL.getChildAt(0);
         String text = "星期" + WEEK_STR[witchDay];
         tv.setText(text);
-        return text;
+
+        TextView tvDate = (TextView)innerLL.getChildAt(1);
+        text = DATA_STR.get(witchDay);
+        tvDate.setText(text);
+        if(showDate){
+            tvDate.setVisibility(View.VISIBLE);
+        }else{
+            tvDate.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -422,7 +457,6 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         startAnimation(getEnumByNum((int)ll.getTag()), ll);
     }
 
-
     private WEEKDAY getEnumByNum(int num){
         switch (num){
             case 1:
@@ -451,14 +485,21 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
             return;
         animalFinish = false;
 
-        String date = DATA_STR.get((int)llClickView.getTag());
-        TextView tv_date = new TextView(getContext());
-        tv_date.setTextSize(dateTextSize);
-        tv_date.setTextColor(dateTextColor);
-        tv_date.setText(date);
-        llClickView.addView(tv_date);
+        LinearLayout innerLL = (LinearLayout)ll3.getChildAt(0);
+        TextView tvDate = (TextView)innerLL.getChildAt(1);
+        tvDate.setVisibility(View.GONE);
+        innerLL = (LinearLayout)llClickView.getChildAt(0);
+        tvDate = (TextView)innerLL.getChildAt(1);
+        tvDate.setVisibility(View.VISIBLE);
 
-
+        /*
+        TextView tv_old = (TextView)ll3.getChildAt(0);
+        String text = "星期" + WEEK_STR[(int)ll3.getTag()];
+        tv_old.setText(text);
+        TextView tv_new = (TextView)llClickView.getChildAt(0);
+        String text1 = "星期" + WEEK_STR[(int)ll3.getTag()];
+        tv_new.setText(Html.fromHtml("<font color='red' size='24'>"+text1+"</font>"));
+*/
 
         //根据当前中间位置显示的 和 被点击的日期，获取需要偏移的增量
         int offset = getXOffset(centerWitch);
@@ -501,6 +542,8 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
                         +" "+ll_7.getX()+" "+ll_8.getX()+" "+ll_9.getX());
 
                 setCenter(centerWitch);
+
+                animalFinish = true;
             }
             @Override
             public void onAnimationCancel(Animator animation) {
