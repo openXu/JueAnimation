@@ -50,6 +50,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     //当前一周7天的日期
     private List<String> DATE_STR;
     /*自定义属性*/
+    private int background;
     private float textSize;
     private float dateTextSize;
     private int textColor;
@@ -109,6 +110,8 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LimitScroller);
             limit = 5;
+
+            background = ta.getColor(R.styleable.LimitScroller_android_background, Color.TRANSPARENT);
 
             textSize = ta.getDimension(R.styleable.LimitScroller_android_textSize, 15f);
             final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
@@ -210,6 +213,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         ll_8.setOnClickListener(this);
         ll_9.setOnClickListener(this);
 
+        setBackgroundColor(background);
     }
 
     @Override

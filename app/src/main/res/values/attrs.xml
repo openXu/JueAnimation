@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LimitScroller">
+
+        <attr name="android:background"/>
         <!--滚动速度，比如3000，滚动时间会持续3秒钟-->
         <attr name="durationTime" format="integer" />
         <attr name="android:textSize"/>

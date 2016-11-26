@@ -7,6 +7,7 @@
 
 1、文件拷贝
 > src\CustomWeekView.java
+    drawable\week_one_bg.xml        item颜色配置
     layout\custom_week_layout.xml
     values\dimens.xml
     values\attrs.xml
@@ -25,6 +26,7 @@
         openxu:scaleSize="1.3"/>
 ```
 > 属性说明：
+    background：控件背景色 （item圆圈颜色请在drawable\week_one_bg.xml设置）
     durationTime：动画持续时间
     textSize：星期几字体大小
     textColor：星期几字体颜色

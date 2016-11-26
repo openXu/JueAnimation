@@ -10,6 +10,7 @@
         android:id="@+id/weekView"
         android:layout_width="match_parent"
         android:layout_height="100dip"
+        android:background="#ff0000"
         android:textSize="13sp"
         openxu:dateTextSize="10"
         android:textColor="#ffffff"
