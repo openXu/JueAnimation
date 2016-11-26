@@ -3,9 +3,11 @@
     <declare-styleable name="LimitScroller">
         <!--滚动速度，比如3000，滚动时间会持续3秒钟-->
         <attr name="durationTime" format="integer" />
-        <!--滚动间隔，比如5000，滚动完成后停留5秒继续滚动-->
-        <attr name="periodTime" format="integer" />
         <attr name="android:textSize"/>
         <attr name="android:textColor"/>
+        <attr name="dateTextSize" format="integer" />
+        <attr name="dateTextColor" format="color" />
+        <attr name="scaleSize" format="float" />  <!--缩放动画增量1：不放大  2:放大两倍-->
+        <attr name="scalSize" format="float" />  <!--缩放动画增量1：不放大  2:放大两倍-->
     </declare-styleable>
 </resources>

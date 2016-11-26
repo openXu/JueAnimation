@@ -3,6 +3,7 @@ package com.openxu.anima;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -30,24 +32,34 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
 
     private String TAG = "CustomWeekViewextends";
 
+
+    /**七天枚举*/
     private enum WEEKDAY{
         wk1,wk2,wk3,wk4,wk5,wk6,wk7
     }
 
-
+    //字条目（5个当前显示、四个预备）
     private LinearLayout ll_1, ll_2, ll_3, ll_4, ll_5, ll_6, ll_7, ll_8, ll_9;
+    //字条目中显示字体的TextView
     private TextView tv_1, tv_2, tv_3, tv_4, tv_5, tv_6, tv_7, tv_8, tv_9;
+    //用于存放所有字条目的引用
     private List<LinearLayout> llList;
-
+    //根据索引获取 大小 展示星期几
     private String[] WEEK_STR = new String[]{"0","一","二","三","四","五","六","日"};
-    private WEEKDAY centerNow;      //当前显示在中间的
-
-    private int ITEM_WIDTH;     //每小项的宽高
-    private int limit;          //可见条目数量
+    //当前一周7天的日期
+    private List<String> DATA_STR;
     /*自定义属性*/
     private float textSize;
+    private float dateTextSize;
     private int textColor;
+    private int dateTextColor;
     private int durationTime;   //动画执行时间
+    private float scaleSize;    //缩放幅度
+
+
+    private WEEKDAY centerNow;  //当前显示在中间的是星期X
+    private int ITEM_WIDTH;     //每小项的宽高
+    private int limit;          //可见条目数量
 
     private boolean animalFinish = false;   //动画期间不嫩点击
 
@@ -91,9 +103,12 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
             textSize = ta.getDimension(R.styleable.LimitScroller_android_textSize, 15f);
             final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
             textSize = textSize / fontScale + 0.5f;
-            textColor = ta.getColor(R.styleable.LimitScroller_android_textColor, Color.BLACK);
+            dateTextSize = ta.getInteger(R.styleable.LimitScroller_dateTextSize, 12);
 
+            textColor = ta.getColor(R.styleable.LimitScroller_android_textColor, Color.BLACK);
+            dateTextColor = ta.getColor(R.styleable.LimitScroller_dateTextColor, Color.RED);
             durationTime = ta.getInt(R.styleable.LimitScroller_durationTime, 1000);
+            scaleSize = ta.getFloat(R.styleable.LimitScroller_scaleSize, 0);
             ta.recycle();  //注意回收
         }
 
@@ -127,6 +142,20 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         llList.add(ll_8);
         llList.add(ll_9);
 
+        DATA_STR = new ArrayList<>();
+        //日历
+        Calendar calend = Calendar.getInstance();
+        int firstData = calend.getFirstDayOfWeek();
+        Log.e(TAG, "================本周第一天时间："+firstData);
+        DATA_STR.add("");
+        DATA_STR.add("11/21");
+        DATA_STR.add("11/22");
+        DATA_STR.add("11/23");
+        DATA_STR.add("11/24");
+        DATA_STR.add("11/25");
+        DATA_STR.add("11/26");
+        DATA_STR.add("11/27");
+
         ll_1.setOnClickListener(this);
         ll_2.setOnClickListener(this);
         ll_3.setOnClickListener(this);
@@ -149,6 +178,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         measureInit();
     }
 
+    /**根据屏幕的宽度和显示的个数，设置item的宽度*/
     private void measureInit(){
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)ll_1.getLayoutParams();
         lp.width = ITEM_WIDTH;
@@ -190,9 +220,14 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     }
 
 
+    /*这些引用代表当前正在显示的5个条目 和 四个预备条目，
+     *由于ll_x系列条目是不断移动的，所以此处需要根据ll_x的位置重新为llx赋值
+     * 其中ll1-ll5为当前正在显示的条目， ll6、ll7为右边隐藏的预备条目， ll8、ll9为左边的隐藏预备条目
+     */
     private LinearLayout ll1, ll2, ll3, ll4, ll5, ll6, ll7, ll8, ll9;
     /**1、找到正在展示的五个item，并将预备item复位*/
     private void setCenter(WEEKDAY weekDay){
+        //记录当前显示在中间的星期X
         centerNow = weekDay;
         //1、找到当前显示的5个条目的位置
         List<LinearLayout> list = new ArrayList<>(llList);
@@ -211,6 +246,9 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
                             break;
                         case 2:
                             ll3 = ll;
+                            //当前中间位置item放大
+                            ll3.getChildAt(0).setScaleX(scaleSize);
+                            ll3.getChildAt(0).setScaleY(scaleSize);
                             break;
                         case 3:
                             ll4 = ll;
@@ -240,7 +278,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
                     ll6=ll;
                     break;
                 case 3:   //右2
-                    ll.setX(-ITEM_WIDTH*6);
+                    ll.setX(ITEM_WIDTH*6);
                     ll7=ll;
                     break;
             }
@@ -349,43 +387,41 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         }
         switch (v.getId()){
             case R.id.ll_1:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_1.getTag()]);
-                startAnimation(getEnumByNum((int)ll_1.getTag()));
+                setClickWitch(ll_1);
                 break;
             case R.id.ll_2:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_2.getTag()]);
-                startAnimation(getEnumByNum((int)ll_2.getTag()));
+                setClickWitch(ll_2);
                 break;
             case R.id.ll_3:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_3.getTag()]);
-                startAnimation(getEnumByNum((int)ll_3.getTag()));
+                setClickWitch(ll_3);
                 break;
             case R.id.ll_4:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_4.getTag()]);
-                startAnimation(getEnumByNum((int)ll_4.getTag()));
+                setClickWitch(ll_4);
                 break;
             case R.id.ll_5:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_5.getTag()]);
-                startAnimation(getEnumByNum((int)ll_5.getTag()));
+                setClickWitch(ll_5);
                 break;
             case R.id.ll_6:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_6.getTag()]);
-                startAnimation(getEnumByNum((int)ll_6.getTag()));
+                setClickWitch(ll_6);
                 break;
             case R.id.ll_7:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_7.getTag()]);
-                startAnimation(getEnumByNum((int)ll_6.getTag()));
+                setClickWitch(ll_7);
                 break;
             case R.id.ll_8:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_8.getTag()]);
-                startAnimation(getEnumByNum((int)ll_8.getTag()));
+                setClickWitch(ll_8);
                 break;
             case R.id.ll_9:
-                Log.v(TAG, "点击了:"+WEEK_STR[(int)ll_9.getTag()]);
-                startAnimation(getEnumByNum((int)ll_9.getTag()));
+                setClickWitch(ll_9);
                 break;
         }
     }
+
+    private void setClickWitch(LinearLayout ll){
+        Log.v(TAG, "点击的item:"+ll.toString().substring(ll.toString().lastIndexOf("ll_"),ll.toString().length())+
+                   "  TAG="+ll.getTag()+" 显示的是：星期"+WEEK_STR[(int)ll.getTag()]);
+        startAnimation(getEnumByNum((int)ll.getTag()), ll);
+    }
+
 
     private WEEKDAY getEnumByNum(int num){
         switch (num){
@@ -409,15 +445,38 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     }
 
 
-    private void startAnimation(final WEEKDAY centerWitch) {
+    private void startAnimation(final WEEKDAY centerWitch, LinearLayout llClickView) {
 
         if(centerWitch==centerNow)
             return;
         animalFinish = false;
+
+        String date = DATA_STR.get((int)llClickView.getTag());
+        TextView tv_date = new TextView(getContext());
+        tv_date.setTextSize(dateTextSize);
+        tv_date.setTextColor(dateTextColor);
+        tv_date.setText(date);
+        llClickView.addView(tv_date);
+
+
+
         //根据当前中间位置显示的 和 被点击的日期，获取需要偏移的增量
         int offset = getXOffset(centerWitch);
         Log.d(TAG, "当前中间为"+centerNow+"，点击的是"+centerWitch+ "  偏移量："+offset);
 
+        //当前中间位置的需要缩放到原尺寸
+        Log.v(TAG, "中间item缩放量scaleX＝"+ll3.getChildAt(0).getScaleX()+" scaleY="+ll3.getChildAt(0).getScaleY());
+        ObjectAnimator anim100 = ObjectAnimator.ofFloat(ll3.getChildAt(0), "scaleX", ll3.getChildAt(0).getScaleX(), 1.0f);
+        ObjectAnimator anim101 = ObjectAnimator.ofFloat(ll3.getChildAt(0), "scaleY", ll3.getChildAt(0).getScaleY(), 1.0f);
+        //被点击的需要放大
+        ObjectAnimator anim102 = ObjectAnimator.ofFloat(llClickView.getChildAt(0), "scaleX", 1, scaleSize);
+        ObjectAnimator anim103 = ObjectAnimator.ofFloat(llClickView.getChildAt(0), "scaleY", 1, scaleSize);
+
+        //透明度动画
+        ObjectAnimator anim104 = ObjectAnimator.ofFloat(llClickView.getChildAt(0), "scaleY", 1, scaleSize);
+
+
+        //位移动画
         ObjectAnimator anim1 = ObjectAnimator.ofFloat(ll_1, "X", ll_1.getX(), ll_1.getX() + offset);
         ObjectAnimator anim2 = ObjectAnimator.ofFloat(ll_2, "X", ll_2.getX(), ll_2.getX() + offset);
         ObjectAnimator anim3 = ObjectAnimator.ofFloat(ll_3, "X", ll_3.getX(), ll_3.getX() + offset);
@@ -429,14 +488,18 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         ObjectAnimator anim9 = ObjectAnimator.ofFloat(ll_9, "X", ll_9.getX(), ll_9.getX() + offset);
         AnimatorSet animSet = new AnimatorSet();
         animSet.setDuration(durationTime);
-        animSet.playTogether(anim1, anim2, anim3, anim4, anim5, anim6, anim7, anim8, anim9);
+        animSet.playTogether(anim100, anim101, anim102, anim103, anim1, anim2, anim3, anim4, anim5, anim6, anim7, anim8, anim9);
         animSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
             }
             @Override
             public void onAnimationEnd(Animator animation) {
-                Log.v(TAG, "动画结束了，重新绑定数据");
+
+                Log.w(TAG, "动画结束后位置："+ll_1.getX()+" "+ll_2.getX()+" "+ll_3.getX()+" "
+                        +ll_4.getX()+" "+ll_5.getX()+" "+ll_6.getX()
+                        +" "+ll_7.getX()+" "+ll_8.getX()+" "+ll_9.getX());
+
                 setCenter(centerWitch);
             }
             @Override

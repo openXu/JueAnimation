@@ -11,6 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="100dip"
         android:textSize="15sp"
+        openxu:dateTextSize="12"
         android:textColor="#ffffff"
+        openxu:dateTextColor="#ff0000"
+        openxu:durationTime="500"
+        openxu:scaleSize="1.3"
         />
 </RelativeLayout>
