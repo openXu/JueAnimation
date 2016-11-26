@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -33,7 +34,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
 
 
     /**七天枚举*/
-    private enum WEEKDAY{
+    public enum WEEKDAY{
         wk1,wk2,wk3,wk4,wk5,wk6,wk7
     }
 
@@ -47,7 +48,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     //根据索引获取 大小 展示星期几
     private String[] WEEK_STR = new String[]{"0","一","二","三","四","五","六","日"};
     //当前一周7天的日期
-    private List<String> DATA_STR;
+    private List<String> DATE_STR;
     /*自定义属性*/
     private float textSize;
     private float dateTextSize;
@@ -169,19 +170,35 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         llList.add(ll_8);
         llList.add(ll_9);
 
-        DATA_STR = new ArrayList<>();
+        DATE_STR = new ArrayList<>();
         //日历
         Calendar calend = Calendar.getInstance();
-        int firstData = calend.getFirstDayOfWeek();
-        Log.e(TAG, "================本周第一天时间："+firstData);
-        DATA_STR.add("");
-        DATA_STR.add("11/21");
-        DATA_STR.add("11/22");
-        DATA_STR.add("11/23");
-        DATA_STR.add("11/24");
-        DATA_STR.add("11/25");
-        DATA_STR.add("11/26");
-        DATA_STR.add("11/27");
+        SimpleDateFormat df = new SimpleDateFormat("MM/dd");
+        calend.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); //获取本周一的日期
+        DATE_STR.add("");
+        DATE_STR.add(df.format(calend.getTime()));
+        Log.d(TAG, "星期一："+df.format(calend.getTime()));
+        //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
+//        calend.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        //增加一个星期，才是我们中国人理解的本周日的日期
+        calend.add(Calendar.DAY_OF_WEEK, 1);
+        DATE_STR.add(df.format(calend.getTime()));
+        Log.d(TAG, "星期二："+df.format(calend.getTime()));
+        calend.add(Calendar.DAY_OF_WEEK, 1);
+        DATE_STR.add(df.format(calend.getTime()));
+        Log.d(TAG, "星期三："+df.format(calend.getTime()));
+        calend.add(Calendar.DAY_OF_WEEK, 1);
+        DATE_STR.add(df.format(calend.getTime()));
+        Log.d(TAG, "星期四："+df.format(calend.getTime()));
+        calend.add(Calendar.DAY_OF_WEEK, 1);
+        DATE_STR.add(df.format(calend.getTime()));
+        Log.d(TAG, "星期五："+df.format(calend.getTime()));
+        calend.add(Calendar.DAY_OF_WEEK, 1);
+        DATE_STR.add(df.format(calend.getTime()));
+        Log.d(TAG, "星期六："+df.format(calend.getTime()));
+        calend.add(Calendar.DAY_OF_WEEK, 1);
+        DATE_STR.add(df.format(calend.getTime()));
+        Log.d(TAG, "星期日："+df.format(calend.getTime()));
 
         ll_1.setOnClickListener(this);
         ll_2.setOnClickListener(this);
@@ -198,11 +215,22 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.w(TAG, "测量完成，宽度*高度="+getMeasuredWidth()+"*"+getMeasuredHeight());
-        ITEM_WIDTH = getMeasuredWidth()/limit;
-        Log.w(TAG, "每小项尺寸："+ITEM_WIDTH+"*"+getMeasuredHeight());
-
-        measureInit();
+//        Log.w(TAG, "测量完成，宽度*高度="+getMeasuredWidth()+"*"+getMeasuredHeight());
+        if(ITEM_WIDTH<=0) {
+            ITEM_WIDTH = getMeasuredWidth()/limit;
+//            Log.w(TAG, "每小项尺寸："+ITEM_WIDTH+"*"+getMeasuredHeight());
+            measureInit();
+        }
+        if(ll_2.getX()>0 && !isFirstSeted) {
+            //设置今天的日期在中间
+            animalFinish = false;
+            Calendar cal = Calendar.getInstance();
+            int todayNum = cal.get(Calendar.DAY_OF_WEEK)-1;
+            Log.d(TAG, "今天是星期"+WEEK_STR[todayNum]);
+            setCenter(getEnumByNum(todayNum));
+            animalFinish = true;
+            isFirstSeted = true;
+        }
     }
 
     /**根据屏幕的宽度和显示的个数，设置item的宽度*/
@@ -234,18 +262,9 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         lp = (LinearLayout.LayoutParams)ll_9.getLayoutParams();
         lp.width = ITEM_WIDTH;
         ll_9.setLayoutParams(lp);
-
-        Log.v(TAG, "位置："+ll_1.getX()+" "+ll_2.getX()+" "+ll_3.getX()+" "
-                +ll_4.getX()+" "+ll_5.getX()+" "+ll_6.getX()
-                +" "+ll_7.getX()+" "+ll_8.getX()+" "+ll_9.getX());
-
-        if(ll_2.getX()>0) {
-            //默认周3在中间
-            animalFinish = false;
-            setCenter(WEEKDAY.wk3);
-            animalFinish = true;
-        }
     }
+
+    private boolean isFirstSeted = false;   //是否已经完成第一次的初始设置
 
     /*这些引用代表当前正在显示的5个条目 和 四个预备条目，
      *由于ll_x系列条目是不断移动的，所以此处需要根据ll_x的位置重新为llx赋值
@@ -263,7 +282,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
                 LinearLayout ll = list.get(j);
                 if(ll.getX()==ITEM_WIDTH*i){
                     list.remove(ll);      //找到之后就remove可以减少后面遍历的次数
-                    Log.d(TAG, "找到"+i+"了"+ll);
+//                    Log.d(TAG, "找到"+i+"了"+ll);
                     switch (i) {
                         case 0:
                             ll1 = ll;
@@ -405,7 +424,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         tv.setText(text);
 
         TextView tvDate = (TextView)innerLL.getChildAt(1);
-        text = DATA_STR.get(witchDay);
+        text = DATE_STR.get(witchDay);
         tvDate.setText(text);
         if(showDate){
             tvDate.setVisibility(View.VISIBLE);
@@ -454,7 +473,12 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     private void setClickWitch(LinearLayout ll){
         Log.v(TAG, "点击的item:"+ll.toString().substring(ll.toString().lastIndexOf("ll_"),ll.toString().length())+
                    "  TAG="+ll.getTag()+" 显示的是：星期"+WEEK_STR[(int)ll.getTag()]);
-        startAnimation(getEnumByNum((int)ll.getTag()), ll);
+        int clickNum = (int)ll.getTag();
+        startAnimation(getEnumByNum(clickNum), ll);
+        if(listener!=null){
+            listener.onItemClick(ll, getEnumByNum(clickNum),
+                    clickNum, DATE_STR.get(clickNum));
+        }
     }
 
     private WEEKDAY getEnumByNum(int num){
@@ -478,8 +502,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
 
     }
 
-
-    private void startAnimation(final WEEKDAY centerWitch, LinearLayout llClickView) {
+    private void startAnimation(final WEEKDAY centerWitch, final LinearLayout llClickView) {
 
         if(centerWitch==centerNow)
             return;
@@ -506,7 +529,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         Log.d(TAG, "当前中间为"+centerNow+"，点击的是"+centerWitch+ "  偏移量："+offset);
 
         //当前中间位置的需要缩放到原尺寸
-        Log.v(TAG, "中间item缩放量scaleX＝"+ll3.getChildAt(0).getScaleX()+" scaleY="+ll3.getChildAt(0).getScaleY());
+//        Log.v(TAG, "中间item缩放量scaleX＝"+ll3.getChildAt(0).getScaleX()+" scaleY="+ll3.getChildAt(0).getScaleY());
         ObjectAnimator anim100 = ObjectAnimator.ofFloat(ll3.getChildAt(0), "scaleX", ll3.getChildAt(0).getScaleX(), 1.0f);
         ObjectAnimator anim101 = ObjectAnimator.ofFloat(ll3.getChildAt(0), "scaleY", ll3.getChildAt(0).getScaleY(), 1.0f);
         //被点击的需要放大
@@ -515,7 +538,6 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
 
         //透明度动画
         ObjectAnimator anim104 = ObjectAnimator.ofFloat(llClickView.getChildAt(0), "scaleY", 1, scaleSize);
-
 
         //位移动画
         ObjectAnimator anim1 = ObjectAnimator.ofFloat(ll_1, "X", ll_1.getX(), ll_1.getX() + offset);
@@ -639,6 +661,27 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
 
         return offset;
 
+    }
+
+
+
+
+    /**************Public APIS***************/
+    private OnItemClickListener listener;
+    public interface OnItemClickListener{
+        /**
+         * 条目点击事件
+         * @param v 被点击的item控件
+         * @param day 被点击的item是星期几，请参见枚举类型WEEKDAY
+         * @param dayNum 被点击的item是一个星期的第几天（1-7）
+         * @param date 被点击的item上的日期11/26
+         * @see WEEKDAY
+         */
+        public void onItemClick(View v, WEEKDAY day, int dayNum, String date);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
     }
 
 
