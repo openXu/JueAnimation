@@ -10,9 +10,13 @@
 **1、文件拷贝**
 
 src\CustomWeekView.java
+
 drawable\week_one_bg.xml        item颜色配置
+
 layout\custom_week_layout.xml
+
 values\dimens.xml
+
 values\attrs.xml
 
 **2、在layout中使用控件**
@@ -31,11 +35,17 @@ values\attrs.xml
 
 **属性说明：**
 background：控件背景色 （item圆圈颜色请在drawable\week_one_bg.xml设置）
+
 durationTime：动画持续时间
+
 textSize：星期几字体大小
+
 textColor：星期几字体颜色
+
 dateTextSize：日期字体大小
+
 dateTextColor：日期字体颜色
+
 scaleSize：显示在中间的item的放大倍数，范围为1~2 （1：不放大  2:放大两倍）
 
 **3、item点击事件回调**
