@@ -1,5 +1,7 @@
 ##炫酷的星期控件
 
+讲解博客：
+
 ##效果图
 ![](/WeekView.gif)
 
@@ -7,10 +9,10 @@
 
 1、文件拷贝
 > src\CustomWeekView.java
-    drawable\week_one_bg.xml        item颜色配置
-    layout\custom_week_layout.xml
-    values\dimens.xml
-    values\attrs.xml
+drawable\week_one_bg.xml        item颜色配置
+layout\custom_week_layout.xml
+values\dimens.xml
+values\attrs.xml
 
 2、在layout中使用控件
 ```xml

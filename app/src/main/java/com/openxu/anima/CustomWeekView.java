@@ -23,14 +23,14 @@ import java.util.List;
  * create at : 2016/11/25 16:25
  * blog : http://blog.csdn.net/xmxkf
  * gitHub : https://github.com/openXu
- * project : JueAnimation
+ * project : RollWeekView
  * class name : CustomWeekView
  * version : 1.0
  * class describe：自定义日期控件
  */
 public class CustomWeekView extends LinearLayout implements View.OnClickListener {
 
-    private String TAG = "CustomWeekViewextends";
+    private String TAG = "CustomWeekView";
 
 
     /**七天枚举*/
@@ -216,6 +216,7 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         setBackgroundColor(background);
     }
 
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -333,9 +334,8 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
                     break;
             }
         }
-
+        //绑定数据
         reBoundDataByCenter(weekDay);
-
     }
 
     /**2、重新绑定数据*/
@@ -518,15 +518,6 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
         innerLL = (LinearLayout)llClickView.getChildAt(0);
         tvDate = (TextView)innerLL.getChildAt(1);
         tvDate.setVisibility(View.VISIBLE);
-
-        /*
-        TextView tv_old = (TextView)ll3.getChildAt(0);
-        String text = "星期" + WEEK_STR[(int)ll3.getTag()];
-        tv_old.setText(text);
-        TextView tv_new = (TextView)llClickView.getChildAt(0);
-        String text1 = "星期" + WEEK_STR[(int)ll3.getTag()];
-        tv_new.setText(Html.fromHtml("<font color='red' size='24'>"+text1+"</font>"));
-*/
 
         //根据当前中间位置显示的 和 被点击的日期，获取需要偏移的增量
         int offset = getXOffset(centerWitch);
