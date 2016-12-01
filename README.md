@@ -1,6 +1,6 @@
 ##炫酷的星期控件
 
-讲解博客：
+讲解博客：http://blog.csdn.net/xmxkf/article/details/53420889
 
 ##效果图
 ![](/WeekView.gif)
