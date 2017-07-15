@@ -220,13 +220,21 @@ public class CustomWeekView extends LinearLayout implements View.OnClickListener
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        Log.w(TAG, "测量完成，宽度*高度="+getMeasuredWidth()+"*"+getMeasuredHeight());
+        Log.w(TAG, "测量完成，宽度*高度="+getMeasuredWidth()+"*"+getMeasuredHeight());
         if(ITEM_WIDTH<=0) {
             ITEM_WIDTH = getMeasuredWidth()/limit;
-//            Log.w(TAG, "每小项尺寸："+ITEM_WIDTH+"*"+getMeasuredHeight());
+            Log.w(TAG, "每小项尺寸："+ITEM_WIDTH+"*"+getMeasuredHeight());
             measureInit();
         }
-        if(ll_2.getX()>0 && !isFirstSeted) {
+
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        Log.d(TAG, "onLayout "+changed+"  l="+l+" t="+t+" r="+r+" b="+b);
+
+        if(!isFirstSeted) {
             //设置今天的日期在中间
             animalFinish = false;
             Calendar cal = Calendar.getInstance();
